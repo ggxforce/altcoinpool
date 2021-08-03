@@ -5,8 +5,8 @@ E' stata utilizzata la versione di BitcoinCore 0.20.0.
 
 Sono necessarie due istanze Unix: 
 
-1- Creazione della mining pool e server di sviluppo
-2- Creazione nodo secondario e Wallet destinatario
+Creazione della mining pool e server di sviluppo
+Creazione nodo secondario e Wallet destinatario
 
 Installa la versione di Ubuntu  su entrambi i server (18.04 nell'esempio). 
 Per comodità installeremo Mate come interfaccia grafica e xrpd (Windows) per la connessione remota.
@@ -186,96 +186,76 @@ Altrimenti (farai molto più in fretta ;) )
 
 ```bash
 make -j "$(($(nproc)+1))"
-```
 
 
+```bash
+// modifica i BIP in modo che partano dall'1
 
-f)   Customize chainparams.cpp
-This file has things to change to personalize your coin, so I will make a list to get this done quickly. Read the comments in the following code.
-
-Code:
-
-// change all the pchMessageStart with something else, so that your messages are unique.
-pchMessageStart[0] = 0xf9;
-pchMessageStart[1] = 0xbe;
-pchMessageStart[2] = 0xb4;
-pchMessageStart[3] = 0xd9;
-
-// change the default port, choose one port that is not used by another popular prog like ftp, or emails. Choose a different port for main,testnet and regnet.
-nDefaultPort = 8333;
-
-// change this to this value so that the consensus will accept your low difficulty mining at starting.
-consensus.nMinimumChainWork = uint256S("0000000000000000000000000000000000000000000000000000000100010001");
-
-// start all the PIB from height 1, so change these to 1
 consensus.BIP34Height = 1; 
 consensus.BIP65Height = 1;
 consensus.BIP65Height = 1;
+```
 
-// change the hash of BIPs to your genesis hash (see the genesis section) ??? is your genesis hash
-// do it for main, testnet and regnet.
+cambia l'hash dei BIPs inserendo il tuo genesis Hash
+
+```bash
 consensus.BIP16Exception = uint256S("0x???");
 consensus.BIP34Hash = uint256S("0x???");
+```
 
-// fix the checkpoint data with your genesis hash, do it for main,testnet and regnet
+Cambia la tua checkpoint data inserendo il genesis hash del blocco zero
+
+```bash
 checkpointData = {{{0, uint256S("0x???")},}};
+```
 
-// empty ChainTxData like this
-chainTxData = ChainTxData{};
+Inserisci gli indirizzi dei tuoi nodi 
 
-// you can change how often the wallet will retarget the difficulty.
-consensus.nPowTargetTimespan =   14 * 24 * 60 * 60; // two weeks
-
-// you can change the target for coin generation; bitcoin is 10 minutes, litecoin 2.5 minutes. Short means quicker transactions, but also more risk of orphan and failed transactions due to network issues. 
-// Also the faster, the more inflation, take this in account when you calculate your max coin generation, and rates.
-consensus.nPowTargetSpacing = 10*60;
-
-// blockchain size: your blockchain is very small; change this parameter to 1 so that it will not ask too much space at starting.
-m_assumed_blockchain_size = 1; // was 240
-
-// comments all the vSeeds, and change that to your server 1 and server 2 address since they will run the wallet and need to be peer to each other to get your coin to be functional.
-vSeeds.emplace_back("seed.bitcoin.sipa.be"); 
-vSeeds.emplace_back("dnsseed.bluematt.me"); 
-
-}
+```bash
+vSeeds.emplace_back("XXX.XXX.XXX.XXX"); Nodo 1
+vSeeds.emplace_back("XXX.XXX.XXX.XXX"); Nodo 2
+```
 
 
-Validation.cpp is not finished yet. We have a problem with SEGWIT. It cannot work at height 1. So in the beginning, we need to disable some checks, that will have to be re-enabled when the blockchain has at least 2000 blocks mined. You have to experiment here; the goal of this tutorial is not to deal with the blockchain maintenance.
+In Validation.cpp abbiamo un problema con SEGWIT. Non può funzionare al blocco 1. Quindi, all'inizio, dobbiamo disabilitare alcuni controlli, che dovranno essere riabilitati quando la blockchain avrà minato almeno 2000 blocchi.
 
-bool IsWitnessEnabled needs to return true in all cases. So just add return true; at the beginning of the function.
+aggiungi true; all'inizio delle seguenti funzioni
 
-IsNullDummyEnabled has the same problem, do the same to that function.
-
-Find this “return state.DoS(100, false, REJECT_INVALID, "bad-cb-height", false, "block height mismatch in coinbase");” and comment it.
-
-End of the validation.cpp customization.
-
-h) Alcune modifiche da fare per rendere la coin funzionante: 
+```bash
+bool IsWitnessEnabled 
+IsNullDummyEnabled
+```
+commenta 
+```bash
+“return state.DoS(100, false, REJECT_INVALID, "bad-cb-height", false, "block height mismatch in coinbase");”
+```
 
 validation.h  :
 -   you need to change the DEFAULT_MAX_TIP_AGE to something very large (60*60*24*365 for example). This is temporary. This is the interval when the blockchain is not mining. At starting you might have a genesis made long time ago, and not have mined for a while, so that this has to be changed or your Coin will not work.
 -   DEFAULT_CHECKPOINTS_ENABLED = true; needs to be changed to false, or your coin will try to verify that you are on the Bitcoin blockchain, which you are not.
 
+in 
+
 \rpc\mining.cpp :
-Another SEGWIT test that needs to be removed:
 
-Code:
+commenta questa riga
 
+```bash
 throw JSONRPCError(RPC_INVALID_PARAMETER, "getblocktemplate must be called with the segwit rule set (call with {\"rules\": [\"segwit\"]})");
-
-Comment this line.
+```
 
 net_processing.cpp :
 -   STALE_CHECK_INTERVAL need to be changed to a large value to avoid having a STALE error, this is again temporary, once the blockchain is mined by many people, it can be back to the original values. (3600*24*365 for example)
 -   STALE_RELAY_AGE_LIMIT same for this static variable.
 
-\qt\bitcoingui.cpp
-Get rid of the loading form set this variable to 0.
+in \qt\bitcoingui.cpp
 
-Code:
-
+modifica
+```bash
 qint64 secs = blockDate.secsTo(currentDate);
-becomes qint64 secs=0;
+in
+qint64 secs=0;
+```
 
 # Installazione della pool (Yiimp)
 
