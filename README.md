@@ -277,7 +277,7 @@ Code:
 qint64 secs = blockDate.secsTo(currentDate);
 becomes qint64 secs=0;
 
-#Installazione della pool (Yiimp)
+# Installazione della pool (Yiimp)
 
 Installa Yiimp sul server mining dove andremo a creare la Pool
 I pool basati su YiiMP non richiedono la registrazione dell'utente.
@@ -286,7 +286,7 @@ Il tuo saldo di mining non verrà visualizzato fino a quando non viene trovato i
 Non devi prelevare manualmente i tuoi pagamenti: i pagamenti sui pool YiiMP vengono effettuati automaticamente ogni 1 ora, ogni 2 ore o ogni 3 ore a seconda delle impostazioni del pool.
 I pool YiiMP supportano più monete e più algoritmi. Ma tieni presente che questo tipo di pool non supporta alcuni degli algoritmi popolari, ad esempio: Ethash, CryptoNight ed Equihash.
 
-
+```bash
 adduser bitPool(o quello che preferisci)
 adduser bitPool sudo
 su - bitPool
@@ -294,18 +294,12 @@ sudo apt -y install git
 git clone https://github.com/xavatar/yiimp_install_scrypt.git
 cd yiimp_install_scrypt/
 bash install.sh (Non lanciare come utente root)
+```
 
 Riavvia il sistema
 
-http://xxx.xxx.xxx.xxx or https://xxx.xxx.xxx.xxx (if you have chosen LetsEncrypt SSL).
+http://xxx.xxx.xxx.xxx or https://xxx.xxx.xxx.xxx (se hai scelto SSL).
 http://xxx.xxx.xxx.xxx/AdminPanel or https://xxx.xxx.xxx.xxx/AdminPanel per accedere al pannello admin della pool.
-
-
-
-creazione della genesi: 
-
-Devi copiare il codice come spiegato nel readme e otterrai nTime, nNone, nBits, Hash e Merkle Root (invertiti).
-Ora puoi sostituirli in chainparams.cpp, in 3 posti, in "main", "testnet" e "regnet".
 
 
 
