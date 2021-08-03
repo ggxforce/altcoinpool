@@ -5,10 +5,9 @@ E' stata utilizzata la versione di BitcoinCore 0.20.0.
 
 Sono necessarie due istanze Unix: 
 
-Creazione della mining pool e server di sviluppo
-Creazione nodo secondario e Wallet destinatario
+Creazione della mining pool e server di sviluppo - Creazione nodo secondario e Wallet destinatario
 
-Installa la versione di Ubuntu  su entrambi i server (18.04 nell'esempio). 
+Installa la versione di Ubuntu su entrambi i server (18.04 nell'esempio). 
 Per comodità installeremo Mate come interfaccia grafica e xrpd (Windows) per la connessione remota.
 Qualora volessimo connetterci da OSX è consigliato utilizzare vncserver.
  
