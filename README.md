@@ -1,4 +1,4 @@
-#Creazione Altcoin (fork bitcoin 0.20.0) + Mining Pool (Yiimp) Ubuntu 18.04
+# Creazione Altcoin (fork bitcoin 0.20.0) + Mining Pool (Yiimp) Ubuntu 18.04
 
 In questo documento è riportata la riproduzione di una rete Bitcoin e la creazione di una pool di mining sulla stessa. 
 E' stata utilizzata la versione di BitcoinCore 0.20.0.
@@ -97,7 +97,7 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 }
 ```
 
-#Mining del primo blocco (blocco Genesis)
+# Mining del primo blocco (blocco Genesis)
 
 git clone https://github.com/liveblockchain/genesisgen.git
 
@@ -113,6 +113,7 @@ NY Times 07/Apr/2018 More Jobs, Faster Growth and Now, the Threat of a Trade War
 
 Lancia il comando di genesi all'interno della repository scaricata sopra:
 
+```bash
 ./genesis  <pubkey> "<timestamp>" <nBits> 0 0
 
 $ ./genesis 048E794284AD7E4D776919BDA05CDD38447D89B436BDAF5F65EBE9D7AD3A0B084908B88162BB60B1AA5ED6542063A30FC9584A335F656A54CD9F66D6C742B67F55 "NY Times 07/Apr/2018 More Jobs, Faster Growth and Now, the Threat of a Trade War" 486604799
@@ -132,23 +133,27 @@ Block found!
 Hash: 00000000ad913538b8764573d00c3eb4a87723e11d8bd008f9125246c58e0252
 Nonce: 2398108787
 Unix time: 1524021159
+```
 
 Quando hai fatto inserisci dati trovati all'interno di chainparams.cpp
 In CMainParams all'interno del costruttore, setta the nonce and unittime, block hash and merkle root assertions:
-Code:
 
+
+```bash
 genesis = CreateGenesisBlock(1524021159, 2398108787, 0x1d00ffff, 1, 50 * COIN);
 assert(consensus.hashGenesisBlock == uint256S("0x00000000ad913538b8764573d00c3eb4a87723e11d8bd008f9125246c58e0252"));
 assert(genesis.hashMerkleRoot == uint256S("0xc8c210d465617fbedc63ec3f26f0ac8024de6f4098c1b5215d35c8726e3ff763"));
+```
 
 nella funzione static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward), setta il timestamp creato:
 
+```bash
 const char* pszTimestamp = "NY Times 07/Apr/2018 More Jobs, Faster Growth and Now, the Threat of a Trade War";
 const CScript genesisOutputScript = CScript() << ParseHex("048e794284ad7e4d776919bda05cdd38447d89b436bdaf5f65ebe9d7ad3a0b084908b88162bb60b1aa5ed6542063a30fc9584a335f656a54cd9f66d6c742b67f55") << OP_CHECKSIG;
+```
 
 
-
-#Compila Bitcoincore
+# Compila Bitcoincore
 
 Entra all'interno della copia locale del repository ed installa Berkeley DB (BDB) v.4.8 necessaria per il completo funzionamento del wallet
 
