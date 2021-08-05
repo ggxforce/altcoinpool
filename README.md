@@ -102,9 +102,9 @@ git clone https://github.com/liveblockchain/genesisgen.git
 
 Genera una chiave privata e copia la sua pubblica.
 
-ssh –keygen –t rsa 4096
+openssl ecparam -genkey -name secp256k1 -text -noout -outform DER | xxd -p -c 1000 | sed 's/41534e31204f49443a20736563703235366b310a30740201010420/PrivKey: /' | sed 's/a00706052b8104000aa144034200/\'$'\nPubKey: /'
 
-048E794284AD7E4D776919BDA05CDD38447D89B436BDAF5F65EBE9D7AD3A0B084908B88162BB60B1AA5ED6542063A30FC9584A335F656A54CD9F66D6C742B67F55
+pubkey: xxxxxxxxx
 
 Scegli un messaggio di genesis esempio:
 
